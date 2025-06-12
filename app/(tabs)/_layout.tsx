@@ -15,6 +15,8 @@ export default function TabLayout() {
         tabBarInactiveTintColor: isDark ? '#999' : '#666',
         tabBarStyle: {
           backgroundColor: isDark ? '#1a1a1a' : '#fff',
+          paddingTop: 50,
+          height: 90,
         },
         headerStyle: {
           backgroundColor: isDark ? '#1a1a1a' : '#fff',
