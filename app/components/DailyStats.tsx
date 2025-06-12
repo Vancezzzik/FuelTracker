@@ -1,0 +1,167 @@
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { useApp } from '../context/AppContext';
+import { DailyStats as DailyStatsType } from '../types';
+
+interface StatsItemProps {
+  label: string;
+  value: string;
+}
+
+const StatsItem: React.FC<StatsItemProps> = ({ label, value }) => {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  return (
+    <View style={styles.statsItem}>
+      <Text style={[styles.label, isDark && styles.labelDark]}>{label}</Text>
+      <Text style={[styles.value, isDark && styles.valueDark]}>{value}</Text>
+    </View>
+  );
+};
+
+export const DailyStats: React.FC = () => {
+  const { records, settings } = useApp();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const [stats, setStats] = useState<DailyStatsType>({
+    startMileage: 0,
+    endMileage: 0,
+    dailyMileage: 0,
+    fuelAdded: 0,
+    startFuel: 0,
+    endFuel: 0,
+    fuelUsed: 0,
+  });
+
+  useEffect(() => {
+    calculateDailyStats();
+  }, [records, settings]);
+
+  const calculateDailyStats = () => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Получаем все записи до сегодняшнего дня
+    const previousRecords = records.filter(r => r.date < today);
+    // Получаем записи за сегодня
+    const todayRecords = records.filter(r => r.date === today);
+    
+    // Рассчитываем общий расход топлива за все предыдущие дни
+    const previousTotalFuelUsed = previousRecords.reduce((sum, r) => 
+      sum + (r.dailyMileage * settings.fuelConsumptionPer100km) / 100, 0);
+    
+    // Рассчитываем общее количество заправленного топлива за все предыдущие дни
+    const previousTotalFuelAdded = previousRecords.reduce((sum, r) => 
+      sum + r.fuelAmount, 0);
+    
+    // Суммируем заправки за сегодня
+    const todayFuelAdded = todayRecords.reduce((sum, r) => sum + r.fuelAmount, 0);
+    
+    // Суммируем пробег за сегодня
+    const todayMileage = todayRecords.reduce((sum, r) => sum + r.dailyMileage, 0);
+    
+    // Расчет расхода топлива за сегодня
+    const todayFuelUsed = (todayMileage * settings.fuelConsumptionPer100km) / 100;
+    
+    const startMileage = settings.totalMileage - todayMileage;
+    const endMileage = settings.totalMileage;
+    
+    // Расчет остатка топлива на начало дня
+    // Берем текущий остаток из настроек, добавляем все предыдущие заправки и вычитаем весь предыдущий расход
+    const startFuel = Math.max(0, settings.currentFuelAmount + previousTotalFuelAdded - previousTotalFuelUsed);
+    
+    // Расчет остатка на конец дня
+    // К остатку на начало дня добавляем сегодняшние заправки и вычитаем сегодняшний расход
+    const endFuel = Math.max(0, startFuel + todayFuelAdded - todayFuelUsed);
+
+    setStats({
+      startMileage,
+      endMileage,
+      dailyMileage: todayMileage,
+      fuelAdded: todayFuelAdded,
+      startFuel,
+      endFuel,
+      fuelUsed: todayFuelUsed,
+    });
+  };
+
+  const formatNumber = (num: number) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  const formatFuel = (liters: number) => {
+    return liters.toFixed(2);
+  };
+
+  return (
+    <View style={[styles.container, isDark && styles.containerDark]}>
+      <StatsItem
+        label="Пробег на начало дня"
+        value={`${formatNumber(stats.startMileage)} км`}
+      />
+      <StatsItem
+        label="Заправлено бензина сегодня"
+        value={`${formatFuel(stats.fuelAdded)} л`}
+      />
+      <StatsItem
+        label="Остаток бензина на начало дня"
+        value={`${formatFuel(stats.startFuel)} л`}
+      />
+      <StatsItem
+        label="Остаток бензина на конец дня"
+        value={`${formatFuel(stats.endFuel)} л`}
+      />
+      <StatsItem
+        label="Расход бензина за сегодня"
+        value={`${formatFuel(stats.fuelUsed)} л`}
+      />
+      <StatsItem
+        label="Пробег на конец дня"
+        value={`${formatNumber(stats.endMileage)} км`}
+      />
+      <StatsItem
+        label="Пробег за сегодня"
+        value={`${formatNumber(stats.dailyMileage)} км`}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  containerDark: {
+    backgroundColor: '#2a2a2a',
+  },
+  statsItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  label: {
+    fontSize: 14,
+    color: '#666',
+  },
+  labelDark: {
+    color: '#999',
+  },
+  value: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  valueDark: {
+    color: '#fff',
+  },
+}); 

@@ -1,0 +1,14 @@
+Version 1.1 - UX Improvements
+
+Changes:
+- Added automatic keyboard dismissal after saving settings
+- Improved settings save workflow:
+  1. Keyboard dismissal
+  2. Data saving
+  3. Toast notification
+
+Base features:
+- Fuel consumption tracking
+- Monthly fuel limits
+- Settings management with Toast notifications
+- Dark/Light theme support 
