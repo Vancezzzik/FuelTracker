@@ -7,7 +7,7 @@ interface DeleteConfirmationProps {
   onCancel: () => void;
 }
 
-export const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
+const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   isVisible,
   onConfirm,
   onCancel,
@@ -52,6 +52,8 @@ export const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({
   );
 };
 
+export default DeleteConfirmation;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
   contentDark: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#222222',
   },
   title: {
     fontSize: 18,
@@ -116,4 +118,4 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
   },
-}); 
+});

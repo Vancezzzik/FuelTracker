@@ -1,14 +1,13 @@
 import { Stack } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import React from 'react';
 import Toast from 'react-native-toast-message';
-import { AppProvider } from './context/AppContext';
+import AppProvider, { useApp } from './context/AppContext';
 
-export default function AppLayout() {
-  const systemColorScheme = useColorScheme();
-  const isDark = systemColorScheme === 'dark';
+function RootLayout() {
+  const { isDark } = useApp();
 
   return (
-    <AppProvider>
+    <>
       <Stack>
         <Stack.Screen
           name="(tabs)"
@@ -28,6 +27,14 @@ export default function AppLayout() {
         />
       </Stack>
       <Toast />
+    </>
+  );
+}
+
+export default function AppLayout() {
+  return (
+    <AppProvider>
+      <RootLayout />
     </AppProvider>
   );
 }

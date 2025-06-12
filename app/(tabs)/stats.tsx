@@ -2,13 +2,26 @@ import { Ionicons } from '@expo/vector-icons';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import DailyStats from '../components/DailyStats';
+import MonthHeader from '../components/MonthHeader';
+import MonthlyStats from '../components/MonthlyStats';
+import TotalMileageCard from '../components/TotalMileageCard';
 import { useApp } from '../context/AppContext';
 
 export default function StatsScreen() {
-  const { records = [], monthlyStats = {}, settings } = useApp();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { records = [], monthlyStats = {}, settings, isDark } = useApp();
+  const [key, setKey] = React.useState(0);
+
+  // Обновляем ключ при изменении темы
+  React.useEffect(() => {
+    setKey((prev: number) => prev + 1);
+  }, [isDark]);
+
+  // Добавляем отладочный вывод
+  React.useEffect(() => {
+    console.log('Current theme isDark:', isDark);
+  }, [isDark]);
 
   // Рассчитываем общую статистику
   const totalStats = React.useMemo(() => {
@@ -75,46 +88,13 @@ export default function StatsScreen() {
   }
 
   return (
-    <ScrollView style={[styles.container, isDark && styles.containerDark]}>
-      {/* Общая статистика */}
-      {totalStats && (
-        <View style={[styles.card, isDark && styles.cardDark]}>
-          <Text style={[styles.cardTitle, isDark && styles.textLight]}>
-            Общая статистика
-          </Text>
-          <Text style={[styles.dateRange, isDark && styles.textLight]}>
-            {formatDisplayDate(totalStats.firstDate)} - {formatDisplayDate(totalStats.lastDate)}
-          </Text>
-          <View style={styles.statsRow}>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, isDark && styles.textLight]}>
-                {formatNumber(totalStats.totalMileage)} км
-              </Text>
-              <Text style={[styles.statLabel, isDark && styles.textGray]}>
-                Общий пробег
-              </Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, isDark && styles.textLight]}>
-                {formatNumber(totalStats.totalFuel, true)} л
-              </Text>
-              <Text style={[styles.statLabel, isDark && styles.textGray]}>
-                Всего топлива
-              </Text>
-            </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, isDark && styles.textLight]}>
-                {formatNumber(totalStats.averageConsumption, true)} л/100км
-              </Text>
-              <Text style={[styles.statLabel, isDark && styles.textGray]}>
-                Средний расход
-              </Text>
-            </View>
-          </View>
-        </View>
-      )}
+    <ScrollView 
+      key={key}
+      style={[styles.container, isDark && styles.containerDark]}
+      contentContainerStyle={styles.contentContainer}
+    >
+      <TotalMileageCard />
 
-      {/* Статистика по месяцам */}
       {sortedMonths.map(month => {
         const stats = monthlyStats[month];
         if (!stats || stats.totalMileage === 0) return null;
@@ -123,37 +103,11 @@ export default function StatsScreen() {
         const monthDate = new Date(parseInt(year), parseInt(monthNum) - 1);
 
         return (
-          <View key={month} style={[styles.card, isDark && styles.cardDark]}>
-            <Text style={[styles.cardTitle, isDark && styles.textLight]}>
-              {format(monthDate, 'LLLL yyyy', { locale: ru })}
-            </Text>
-            <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                <Text style={[styles.statValue, isDark && styles.textLight]}>
-                  {formatNumber(stats.totalMileage)} км
-                </Text>
-                <Text style={[styles.statLabel, isDark && styles.textGray]}>
-                  Пробег
-                </Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={[styles.statValue, isDark && styles.textLight]}>
-                  {formatNumber(stats.totalFuel, true)} л
-                </Text>
-                <Text style={[styles.statLabel, isDark && styles.textGray]}>
-                  Топливо
-                </Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={[styles.statValue, isDark && styles.textLight]}>
-                  {formatNumber(stats.averageConsumption, true)} л/100км
-                </Text>
-                <Text style={[styles.statLabel, isDark && styles.textGray]}>
-                  Расход
-                </Text>
-              </View>
-            </View>
-          </View>
+          <React.Fragment key={month}>
+            <MonthHeader date={monthDate} />
+            <MonthlyStats />
+            <DailyStats />
+          </React.Fragment>
         );
       })}
     </ScrollView>
@@ -166,7 +120,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   containerDark: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#1A1A1A',
+  },
+  contentContainer: {
+    paddingBottom: 20,
   },
   emptyContainer: {
     justifyContent: 'center',
@@ -178,56 +135,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     marginTop: 16,
-    marginBottom: 8,
   },
   emptyText: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    margin: 16,
-    marginBottom: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  cardDark: {
-    backgroundColor: '#2a2a2a',
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-  dateRange: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 16,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: '#666',
+    marginTop: 8,
   },
   textLight: {
     color: '#fff',
@@ -235,4 +148,4 @@ const styles = StyleSheet.create({
   textGray: {
     color: '#999',
   },
-}); 
+});

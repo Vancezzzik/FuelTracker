@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 
-export const CurrentDate: React.FC = () => {
+const CurrentDate: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -30,6 +30,8 @@ export const CurrentDate: React.FC = () => {
     </View>
   );
 };
+
+export default CurrentDate;
 
 const styles = StyleSheet.create({
   container: {

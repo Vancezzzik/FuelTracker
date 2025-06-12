@@ -57,4 +57,7 @@ export interface AppContextType {
   monthlyStats: { [key: string]: MonthlyStats };
   records: FuelRecord[];
   settings: AppSettings;
-} 
+}
+
+// Пустой объект для экспорта по умолчанию
+export default {}; 

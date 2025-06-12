@@ -33,7 +33,7 @@ const DEFAULT_STATE: AppState = {
   settings: DEFAULT_SETTINGS,
 };
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AppState>(DEFAULT_STATE);
   const systemColorScheme = useColorScheme();
 
@@ -239,23 +239,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const getLastRecord = () => {
     if (state.records.length === 0) return undefined;
-    return [...state.records].sort((a, b) => b.date.localeCompare(a.date))[0];
+    return state.records[state.records.length - 1];
   };
 
   const updateRecord = async (record: FuelRecord) => {
     try {
-      const oldRecord = state.records.find(r => r.id === record.id);
-      if (!oldRecord) {
+      const recordIndex = state.records.findIndex(r => r.id === record.id);
+      if (recordIndex === -1) {
         console.warn('Record not found:', record.id);
         return;
       }
 
-      // Обновляем запись в массиве
-      const updatedRecords = state.records.map(r => 
-        r.id === record.id ? record : r
-      );
+      const updatedRecords = [...state.records];
+      updatedRecords[recordIndex] = record;
 
-      // Создаем обновленное состояние
       const updatedState: AppState = {
         ...state,
         records: updatedRecords,
@@ -267,45 +264,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       // Сохраняем данные
       await saveData(updatedState);
 
-      // Пересчитываем статистику для месяца обновленной записи
-      const recordMonth = record.date.substring(0, 7);
-      calculateMonthStats(recordMonth, updatedRecords);
-
-      // Если изменился месяц записи, пересчитываем статистику для старого месяца
-      const oldMonth = oldRecord.date.substring(0, 7);
-      if (oldMonth !== recordMonth) {
-        calculateMonthStats(oldMonth, updatedRecords);
-      }
+      // Пересчитываем статистику
+      calculateMonthStats(record.date.substring(0, 7), updatedRecords);
     } catch (error) {
       console.error('Error updating record:', error);
       throw error;
     }
   };
 
-  // Загрузка данных при монтировании
-  useEffect(() => {
-    loadData();
-  }, []);
-
   const loadData = async () => {
     try {
       const data = await AsyncStorage.getItem(STORAGE_KEY);
       if (data) {
-        const parsedData = JSON.parse(data) as AppState;
-        const newState: AppState = {
-          ...DEFAULT_STATE,
-          ...parsedData,
-          settings: {
-            ...DEFAULT_SETTINGS,
-            ...parsedData.settings,
-          },
-          monthlyStats: {},
-        };
-        setState(newState);
-
-        // Пересчитываем статистику для всех месяцев после загрузки
-        const months = Array.from(new Set(newState.records.map((r: FuelRecord) => r.date.substring(0, 7)))) as string[];
-        months.forEach((month) => calculateMonthStats(month, newState.records));
+        const parsedData = JSON.parse(data);
+        setState(parsedData);
       }
     } catch (error) {
       console.error('Error loading data:', error);
@@ -314,18 +286,19 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const saveData = async (newState: AppState) => {
     try {
-      const dataToSave = JSON.stringify(newState);
-      await AsyncStorage.setItem(STORAGE_KEY, dataToSave);
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
     } catch (error) {
       console.error('Error saving data:', error);
       throw error;
     }
   };
 
-  // Создаем значение контекста
+  useEffect(() => {
+    loadData();
+  }, []);
+
   const contextValue: AppContextType = {
     ...state,
-    isDark,
     addRecord,
     updateRecord,
     deleteRecord,
@@ -333,6 +306,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     calculateMonthStats,
     updateSettings,
     getLastRecord,
+    isDark,
   };
 
   return (
@@ -341,6 +315,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     </AppContext.Provider>
   );
 };
+
+export default AppProvider;
 
 export const useApp = () => {
   const context = useContext(AppContext);

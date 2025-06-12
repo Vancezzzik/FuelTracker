@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 
-export const TotalMileageCard: React.FC = () => {
+const TotalMileageCard: React.FC = () => {
   const { settings, monthlyStats, currentMonth, isDark } = useApp();
 
   const formatNumber = (num: number, withDecimals: boolean = false) => {
@@ -48,6 +48,8 @@ export const TotalMileageCard: React.FC = () => {
     </View>
   );
 };
+
+export default TotalMileageCard;
 
 const styles = StyleSheet.create({
   container: {

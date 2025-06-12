@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 import { FuelRecord } from '../types';
-import { DatePicker } from './DatePicker';
+import DatePicker from './DatePicker';
 
 interface FuelRecordFormProps {
   initialData?: FuelRecord;
   onSubmit: () => void;
 }
 
-export const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
+const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
   initialData,
   onSubmit,
 }) => {
@@ -93,6 +93,8 @@ export const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
     </View>
   );
 };
+
+export default FuelRecordForm;
 
 const styles = StyleSheet.create({
   container: {

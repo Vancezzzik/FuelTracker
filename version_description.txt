@@ -1,3 +1,11 @@
+Version 1.5 - UI Improvements
+
+Changes:
+- Improved dark theme color scheme:
+  1. Changed background color from black (#000000) to dark gray (#1A1A1A)
+  2. Changed card background color from #2a2a2a to darker gray (#222222)
+  3. Overall more professional look in dark mode
+
 Version 1.1 - UX Improvements
 
 Changes:
@@ -11,4 +19,4 @@ Base features:
 - Fuel consumption tracking
 - Monthly fuel limits
 - Settings management with Toast notifications
-- Dark/Light theme support 
+- Dark/Light theme support

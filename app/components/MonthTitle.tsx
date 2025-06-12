@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 
-export const MonthTitle: React.FC = () => {
+const MonthTitle: React.FC = () => {
   const { currentMonth } = useApp();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -25,6 +25,8 @@ export const MonthTitle: React.FC = () => {
     </View>
   );
 };
+
+export default MonthTitle;
 
 const styles = StyleSheet.create({
   container: {

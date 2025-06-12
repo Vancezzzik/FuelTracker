@@ -45,7 +45,7 @@ interface FuelRecordsListProps {
   onRecordPress: (record: FuelRecord) => void;
 }
 
-export const FuelRecordsList: React.FC<FuelRecordsListProps> = ({
+const FuelRecordsList: React.FC<FuelRecordsListProps> = ({
   onRecordPress,
 }) => {
   const { records, currentMonth } = useApp();
@@ -70,13 +70,15 @@ export const FuelRecordsList: React.FC<FuelRecordsListProps> = ({
   );
 };
 
+export default FuelRecordsList;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
   },
   containerDark: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#1A1A1A',
   },
   listContent: {
     padding: 16,
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   recordItemDark: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#222222',
     shadowColor: '#fff',
   },
   recordItemPressed: {
@@ -126,4 +128,4 @@ const styles = StyleSheet.create({
   fuelAmountDark: {
     color: '#999',
   },
-}); 
+});

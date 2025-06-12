@@ -293,10 +293,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
-    padding: 16,
   },
   containerDark: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#1A1A1A',
   },
   card: {
     backgroundColor: '#fff',
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   cardDark: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#222222',
   },
   inputContainer: {
     marginBottom: 16,
@@ -384,4 +383,4 @@ const styles = StyleSheet.create({
   activeThemeButtonText: {
     color: '#fff',
   },
-}); 
+});

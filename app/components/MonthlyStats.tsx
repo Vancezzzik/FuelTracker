@@ -1,16 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 
 interface StatsItemProps {
   label: string;
   value: string;
+  isDark: boolean;
 }
 
-const StatsItem: React.FC<StatsItemProps> = ({ label, value }) => {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-
+const StatsItem: React.FC<StatsItemProps> = ({ label, value, isDark }) => {
   return (
     <View style={styles.statsItem}>
       <Text style={[styles.label, isDark && styles.labelDark]}>{label}</Text>
@@ -19,10 +17,8 @@ const StatsItem: React.FC<StatsItemProps> = ({ label, value }) => {
   );
 };
 
-export const MonthlyStats: React.FC = () => {
-  const { currentMonth, monthlyStats, settings } = useApp();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+const MonthlyStats: React.FC = () => {
+  const { currentMonth, monthlyStats, settings, isDark } = useApp();
 
   const stats = monthlyStats[currentMonth] || {
     totalMileage: 0,
@@ -49,18 +45,23 @@ export const MonthlyStats: React.FC = () => {
       <StatsItem
         label="Пробег за месяц"
         value={`${formatNumber(Math.max(0, stats.totalMileage))} км`}
+        isDark={isDark}
       />
       <StatsItem
         label="Заправлено бензина за месяц"
         value={`${formatFuel(stats.totalFuel)} л`}
+        isDark={isDark}
       />
       <StatsItem
         label="Использовано бензина за месяц"
         value={`${formatFuel(fuelUsed)} л`}
+        isDark={isDark}
       />
     </View>
   );
 };
+
+export default MonthlyStats;
 
 const styles = StyleSheet.create({
   container: {

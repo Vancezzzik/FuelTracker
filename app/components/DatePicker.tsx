@@ -7,7 +7,7 @@ interface DatePickerProps {
   onChange: (date: string) => void;
 }
 
-export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
+const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
   const [isVisible, setIsVisible] = useState(false);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
@@ -70,6 +70,8 @@ export const DatePicker: React.FC<DatePickerProps> = ({ value, onChange }) => {
     </View>
   );
 };
+
+export default DatePicker;
 
 const styles = StyleSheet.create({
   button: {

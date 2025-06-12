@@ -5,7 +5,6 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    useColorScheme,
     View,
 } from 'react-native';
 import { useApp } from '../context/AppContext';
@@ -13,9 +12,7 @@ import { useApp } from '../context/AppContext';
 export default function RecordScreen() {
   const { date } = useLocalSearchParams();
   const router = useRouter();
-  const { records, addRecord, updateRecord, deleteRecord } = useApp();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { records, addRecord, updateRecord, deleteRecord, isDark } = useApp();
 
   const existingRecord = records.find((r) => r.date === date);
   const [dailyMileage, setDailyMileage] = React.useState(
@@ -118,9 +115,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+    padding: 16,
   },
   containerDark: {
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#1A1A1A',
   },
   card: {
     backgroundColor: '#fff',
@@ -134,7 +132,8 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   cardDark: {
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#222222',
+    shadowOpacity: 0.2,
   },
   date: {
     fontSize: 18,
@@ -191,4 +190,4 @@ const styles = StyleSheet.create({
   textLight: {
     color: '#fff',
   },
-}); 
+});

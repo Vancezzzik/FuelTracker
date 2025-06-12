@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-export const AddRecordButton: React.FC = () => {
+const AddRecordButton: React.FC = () => {
   const router = useRouter();
 
   const handlePress = () => {
@@ -20,6 +20,8 @@ export const AddRecordButton: React.FC = () => {
     </TouchableOpacity>
   );
 };
+
+export default AddRecordButton;
 
 const styles = StyleSheet.create({
   button: {

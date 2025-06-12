@@ -1,15 +1,19 @@
 import { format } from 'date-fns';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { StyleSheet, useColorScheme, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { useApp } from '../context/AppContext';
 
-export const FuelCalendar: React.FC = () => {
+const FuelCalendar: React.FC = () => {
   const router = useRouter();
-  const { records, setCurrentMonth, currentMonth } = useApp();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { records, setCurrentMonth, currentMonth, isDark } = useApp();
+  const [key, setKey] = useState(0);
+
+  // Принудительное обновление календаря при изменении темы
+  useEffect(() => {
+    setKey(prev => prev + 1);
+  }, [isDark]);
 
   const markedDates = records.reduce((acc, record) => {
     acc[record.date] = { marked: true, dotColor: '#2089dc' };
@@ -31,6 +35,7 @@ export const FuelCalendar: React.FC = () => {
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
       <Calendar
+        key={key}
         onMonthChange={handleMonthChange}
         markedDates={markedDates}
         onDayPress={handleDayPress}
@@ -43,11 +48,16 @@ export const FuelCalendar: React.FC = () => {
           dayTextColor: isDark ? '#fff' : '#333',
           textDisabledColor: isDark ? '#666' : '#999',
           monthTextColor: isDark ? '#fff' : '#333',
+          arrowColor: isDark ? '#fff' : '#333',
+          dotColor: '#2089dc',
+          todayBackgroundColor: isDark ? '#404040' : '#e6e6e6',
         }}
       />
     </View>
   );
 };
+
+export default FuelCalendar;
 
 const styles = StyleSheet.create({
   container: {
@@ -62,5 +72,6 @@ const styles = StyleSheet.create({
   },
   containerDark: {
     backgroundColor: '#2a2a2a',
+    shadowOpacity: 0.2,
   },
 }); 

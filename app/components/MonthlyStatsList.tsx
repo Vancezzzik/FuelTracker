@@ -14,7 +14,7 @@ const StatItem: React.FC<StatItemProps> = ({ label, value }) => (
   </View>
 );
 
-export const MonthlyStatsList: React.FC = () => {
+const MonthlyStatsList: React.FC = () => {
   const { monthlyStats } = useApp();
 
   const sortedMonths = Object.keys(monthlyStats).sort((a, b) => b.localeCompare(a));
@@ -48,6 +48,8 @@ export const MonthlyStatsList: React.FC = () => {
     </ScrollView>
   );
 };
+
+export default MonthlyStatsList;
 
 const styles = StyleSheet.create({
   container: {
