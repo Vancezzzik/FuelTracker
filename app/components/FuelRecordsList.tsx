@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 import { FuelRecord } from '../types';
 
@@ -14,8 +14,7 @@ const formatDisplayDate = (dateString: string) => {
 };
 
 const FuelRecordItem: React.FC<FuelRecordItemProps> = ({ record, onPress }) => {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { isDark } = useApp();
 
   return (
     <Pressable
@@ -48,9 +47,7 @@ interface FuelRecordsListProps {
 const FuelRecordsList: React.FC<FuelRecordsListProps> = ({
   onRecordPress,
 }) => {
-  const { records, currentMonth } = useApp();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { records, currentMonth, isDark } = useApp();
 
   const filteredRecords = records
     .filter((record) => record.date.startsWith(currentMonth))

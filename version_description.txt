@@ -1,3 +1,11 @@
+Version 1.6 - Navigation Improvements
+
+Changes:
+- Attempted to add swipe gestures for navigation between tabs
+- Researched React Navigation Material Top Tab Navigator implementation
+- Explored gesture handling for better user experience
+- Maintained existing UI/UX improvements from previous versions
+
 Version 1.5 - UI Improvements
 
 Changes:

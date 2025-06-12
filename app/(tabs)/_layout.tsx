@@ -1,12 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
+import { withLayoutContext } from 'expo-router';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useApp } from '../context/AppContext';
+
+const { Navigator } = createMaterialTopTabNavigator();
+const MaterialTopTabs = withLayoutContext(Navigator);
 
 export default function TabLayout() {
   const { isDark } = useApp();
 
   return (
-    <Tabs
+    <MaterialTopTabs
       screenOptions={{
         tabBarActiveTintColor: '#2089dc',
         tabBarInactiveTintColor: isDark ? '#999' : '#666',
@@ -17,34 +20,49 @@ export default function TabLayout() {
           backgroundColor: isDark ? '#1a1a1a' : '#fff',
         },
         headerTintColor: isDark ? '#fff' : '#000',
+        swipeEnabled: true,
+        animationEnabled: true,
+        tabBarScrollEnabled: true,
+        tabBarShowIcon: false,
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+        },
+        tabBarItemStyle: {
+          width: 'auto',
+          minWidth: 80,
+        },
       }}>
-      <Tabs.Screen
+      <MaterialTopTabs.Screen
         name="index"
         options={{
           title: 'Статистика',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="stats-chart" size={size} color={color} />
-          ),
         }}
       />
-      <Tabs.Screen
+      <MaterialTopTabs.Screen
         name="calendar"
         options={{
           title: 'Календарь',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="calendar" size={size} color={color} />
-          ),
         }}
       />
-      <Tabs.Screen
+      <MaterialTopTabs.Screen
         name="settings"
         options={{
           title: 'Настройки',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
         }}
       />
-    </Tabs>
+      <MaterialTopTabs.Screen
+        name="stats"
+        options={{
+          title: 'Статистика',
+        }}
+      />
+      <MaterialTopTabs.Screen
+        name="records"
+        options={{
+          title: 'Записи',
+        }}
+      />
+    </MaterialTopTabs>
   );
 }
