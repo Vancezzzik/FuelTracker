@@ -5,6 +5,8 @@ export interface FuelRecord {
   totalMileage: number;
   dailyMileage: number;
   fuelAmount: number;
+  fuelPrice: number; // Цена за литр топлива
+  totalCost: number; // Общая стоимость заправки
 }
 
 // Типы для месячной статистики
@@ -16,6 +18,9 @@ export interface MonthlyStats {
   startFuel: number;
   endFuel: number;
   remainingFuelLimit: number; // Остаток от месячного лимита
+  totalCost: number; // Общая стоимость топлива за месяц
+  averageFuelPrice: number; // Средняя цена за литр топлива
+  costPer100km: number; // Стоимость 100 км пробега
 }
 
 // Типы для ежедневной статистики
@@ -36,6 +41,10 @@ export interface AppSettings {
   currentFuelAmount: number;
   theme: 'system' | 'light' | 'dark';
   monthlyFuelLimit: number; // Лимит бензина на месяц
+  defaultFuelPrice: number; // Цена топлива по умолчанию
+  monthlyBudget: number; // Месячный бюджет на топливо
+  showAnalytics: boolean; // Показывать ли аналитику
+  fontSize: 'normal' | 'medium' | 'large'; // Размер шрифта
 }
 
 // Типы для состояния приложения
@@ -60,4 +69,4 @@ export interface AppContextType {
 }
 
 // Пустой объект для экспорта по умолчанию
-export default {}; 
+export default {};

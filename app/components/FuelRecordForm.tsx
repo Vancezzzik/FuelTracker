@@ -26,12 +26,22 @@ const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
   const [fuelAmount, setFuelAmount] = useState(
     initialData?.fuelAmount?.toString() || ''
   );
+  const [fuelPrice, setFuelPrice] = useState(
+    initialData?.fuelPrice?.toString() || (state.settings.defaultFuelPrice ?? 0).toString() || ''
+  );
+  
+  // Расчет общей стоимости
+  const totalCost = !isNaN(parseFloat(fuelAmount)) && !isNaN(parseFloat(fuelPrice))
+    ? parseFloat(fuelAmount) * parseFloat(fuelPrice)
+    : 0;
 
   const handleSubmit = async () => {
     const record = {
       date,
       totalMileage: parseFloat(totalMileage),
       fuelAmount: parseFloat(fuelAmount),
+      fuelPrice: parseFloat(fuelPrice),
+      totalCost: totalCost,
     };
 
     if (initialData) {
@@ -47,8 +57,10 @@ const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
     date &&
     totalMileage &&
     fuelAmount &&
+    fuelPrice &&
     !isNaN(parseFloat(totalMileage)) &&
-    !isNaN(parseFloat(fuelAmount));
+    !isNaN(parseFloat(fuelAmount)) &&
+    !isNaN(parseFloat(fuelPrice));
 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
@@ -83,6 +95,29 @@ const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
           placeholder="0.0"
           placeholderTextColor={isDark ? '#666' : '#999'}
         />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={[styles.label, isDark && styles.labelDark]}>
+          Цена за литр (руб)
+        </Text>
+        <TextInput
+          style={[styles.input, isDark && styles.inputDark]}
+          value={fuelPrice}
+          onChangeText={setFuelPrice}
+          keyboardType="numeric"
+          placeholder="0.0"
+          placeholderTextColor={isDark ? '#666' : '#999'}
+        />
+      </View>
+
+      <View style={styles.inputContainer}>
+        <Text style={[styles.label, isDark && styles.labelDark]}>
+          Общая стоимость (руб)
+        </Text>
+        <Text style={[styles.totalCost, isDark && styles.totalCostDark]}>
+          {totalCost.toFixed(2)}
+        </Text>
       </View>
 
       <Button
@@ -131,4 +166,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     backgroundColor: '#1a1a1a',
   },
-}); 
+  totalCost: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    backgroundColor: '#f5f5f5',
+  },
+  totalCostDark: {
+    color: '#fff',
+    borderColor: '#444',
+    backgroundColor: '#333',
+  },
+});

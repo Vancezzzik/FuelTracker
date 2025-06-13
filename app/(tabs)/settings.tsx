@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView, SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useApp } from '../context/AppContext';
 
@@ -7,16 +7,22 @@ export default function SettingsScreen() {
   const { settings, updateSettings, isDark } = useApp();
 
   const [consumption, setConsumption] = useState(
-    settings.fuelConsumptionPer100km.toString()
+    (settings.fuelConsumptionPer100km ?? 0).toString()
   );
   const [totalMileage, setTotalMileage] = useState(
-    settings.totalMileage.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+    (settings.totalMileage ?? 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
   );
   const [currentFuel, setCurrentFuel] = useState(
-    settings.currentFuelAmount.toString()
+    (settings.currentFuelAmount ?? 0).toString()
   );
   const [monthlyFuelLimit, setMonthlyFuelLimit] = useState(
-    settings.monthlyFuelLimit.toString()
+    (settings.monthlyFuelLimit ?? 0).toString()
+  );
+  const [defaultFuelPrice, setDefaultFuelPrice] = useState(
+    (settings.defaultFuelPrice ?? 0).toString()
+  );
+  const [monthlyBudget, setMonthlyBudget] = useState(
+    (settings.monthlyBudget ?? 0).toString()
   );
 
   const showSuccessToast = (message: string) => {
@@ -102,6 +108,85 @@ export default function SettingsScreen() {
     }
   };
 
+  const handleSaveDefaultFuelPrice = async () => {
+    try {
+      Keyboard.dismiss();
+      await updateSettings({
+        ...settings,
+        defaultFuelPrice: parseFloat(defaultFuelPrice) || 0,
+      });
+      showSuccessToast('Цена топлива по умолчанию успешно обновлена');
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Ошибка',
+        text2: 'Не удалось сохранить цену топлива по умолчанию',
+        position: 'bottom',
+      });
+    }
+  };
+
+  const handleSaveMonthlyBudget = async () => {
+    try {
+      Keyboard.dismiss();
+      await updateSettings({
+        ...settings,
+        monthlyBudget: parseFloat(monthlyBudget) || 0,
+      });
+      showSuccessToast('Месячный бюджет успешно обновлен');
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Ошибка',
+        text2: 'Не удалось сохранить месячный бюджет',
+        position: 'bottom',
+      });
+    }
+  };
+
+  const handleToggleAnalytics = async () => {
+    try {
+      await updateSettings({
+        ...settings,
+        showAnalytics: !settings.showAnalytics,
+      });
+      showSuccessToast(
+        `Аналитика ${!settings.showAnalytics ? 'включена' : 'отключена'}`
+      );
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Ошибка',
+        text2: 'Не удалось изменить настройку аналитики',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+    }
+  };
+
+  const handleFontSizeChange = async (fontSize: 'normal' | 'medium' | 'large') => {
+    try {
+      await updateSettings({
+        ...settings,
+        fontSize,
+      });
+      const sizeNames = {
+        normal: 'обычный',
+        medium: 'средний',
+        large: 'крупный'
+      };
+      showSuccessToast(`Размер шрифта изменен на ${sizeNames[fontSize]}`);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Ошибка',
+        text2: 'Не удалось изменить размер шрифта',
+        position: 'bottom',
+        visibilityTime: 3000,
+      });
+    }
+  };
+
   const handleThemeChange = async (theme: 'system' | 'light' | 'dark') => {
     try {
       await updateSettings({
@@ -138,9 +223,28 @@ export default function SettingsScreen() {
     }
   };
 
+  const handleDefaultFuelPriceChange = (text: string) => {
+    const value = text.replace(',', '.');
+    if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
+      setDefaultFuelPrice(value);
+    }
+  };
+
+  const handleMonthlyBudgetChange = (text: string) => {
+    const value = text.replace(',', '.');
+    if (value === '' || (!isNaN(parseFloat(value)) && parseFloat(value) >= 0)) {
+      setMonthlyBudget(value);
+    }
+  };
+
   return (
-    <View style={[styles.container, isDark && styles.containerDark]}>
-      <View style={[styles.card, isDark && styles.cardDark]}>
+    <SafeAreaView style={[styles.container, isDark && styles.containerDark]}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={[styles.card, isDark && styles.cardDark]}>
         <View style={styles.inputContainer}>
           <Text style={[styles.label, isDark && styles.textLight]}>
             Средний расход на 100 км
@@ -229,6 +333,128 @@ export default function SettingsScreen() {
           </View>
         </View>
 
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, isDark && styles.textLight]}>
+            Цена топлива по умолчанию (руб/л)
+          </Text>
+          <View style={styles.inputWithButton}>
+            <TextInput
+              style={[styles.input, isDark && styles.inputDark]}
+              value={defaultFuelPrice}
+              onChangeText={handleDefaultFuelPriceChange}
+              keyboardType="numeric"
+              placeholder="Введите цену топлива по умолчанию"
+              placeholderTextColor={isDark ? '#666' : '#999'}
+            />
+            <TouchableOpacity
+              style={[styles.saveButton, styles.smallButton]}
+              onPress={handleSaveDefaultFuelPrice}
+            >
+              <Text style={styles.buttonText}>Сохранить</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, isDark && styles.textLight]}>
+            Месячный бюджет (руб)
+          </Text>
+          <View style={styles.inputWithButton}>
+            <TextInput
+              style={[styles.input, isDark && styles.inputDark]}
+              value={monthlyBudget}
+              onChangeText={handleMonthlyBudgetChange}
+              keyboardType="numeric"
+              placeholder="Введите месячный бюджет"
+              placeholderTextColor={isDark ? '#666' : '#999'}
+            />
+            <TouchableOpacity
+              style={[styles.saveButton, styles.smallButton]}
+              onPress={handleSaveMonthlyBudget}
+            >
+              <Text style={styles.buttonText}>Сохранить</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, isDark && styles.textLight]}>
+            Показывать аналитику
+          </Text>
+          <TouchableOpacity
+            style={[
+              styles.toggleButton,
+              settings.showAnalytics && styles.toggleButtonActive,
+            ]}
+            onPress={handleToggleAnalytics}
+          >
+            <Text
+              style={[
+                styles.toggleButtonText,
+                settings.showAnalytics && styles.toggleButtonTextActive,
+              ]}
+            >
+              {settings.showAnalytics ? 'Включена' : 'Отключена'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.themeContainer}>
+          <Text style={[styles.label, isDark && styles.textLight]}>
+            Размер шрифта
+          </Text>
+          <View style={styles.themeButtons}>
+            <TouchableOpacity
+              style={[
+                styles.themeButton,
+                settings.fontSize === 'normal' && styles.activeThemeButton,
+              ]}
+              onPress={() => handleFontSizeChange('normal')}
+            >
+              <Text
+                style={[
+                  styles.themeButtonText,
+                  settings.fontSize === 'normal' && styles.activeThemeButtonText,
+                ]}
+              >
+                Обычный
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.themeButton,
+                settings.fontSize === 'medium' && styles.activeThemeButton,
+              ]}
+              onPress={() => handleFontSizeChange('medium')}
+            >
+              <Text
+                style={[
+                  styles.themeButtonText,
+                  settings.fontSize === 'medium' && styles.activeThemeButtonText,
+                ]}
+              >
+                Средний
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.themeButton,
+                settings.fontSize === 'large' && styles.activeThemeButton,
+              ]}
+              onPress={() => handleFontSizeChange('large')}
+            >
+              <Text
+                style={[
+                  styles.themeButtonText,
+                  settings.fontSize === 'large' && styles.activeThemeButtonText,
+                ]}
+              >
+                Крупный
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <View style={styles.themeContainer}>
           <Text style={[styles.label, isDark && styles.textLight]}>
             Тема оформления
@@ -284,8 +510,9 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
-    </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -297,10 +524,39 @@ const styles = StyleSheet.create({
   containerDark: {
     backgroundColor: '#1A1A1A',
   },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
+  },
+  toggleButton: {
+    padding: 8,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    alignItems: 'center',
+    marginTop: 8,
+    backgroundColor: '#f5f5f5',
+  },
+  toggleButtonActive: {
+    backgroundColor: '#2089dc',
+    borderColor: '#2089dc',
+  },
+  toggleButtonText: {
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  toggleButtonTextActive: {
+    color: '#fff',
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: 16,
+    margin: 16,
+    marginTop: 8,
+    marginBottom: 8,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

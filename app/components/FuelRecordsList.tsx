@@ -33,9 +33,21 @@ const FuelRecordItem: React.FC<FuelRecordItemProps> = ({ record, onPress }) => {
           {record.totalMileage} км
         </Text>
       </View>
-      <Text style={[styles.fuelAmount, isDark && styles.fuelAmountDark]}>
-        {record.fuelAmount} л
-      </Text>
+      <View style={styles.recordDetails}>
+        <Text style={[styles.fuelAmount, isDark && styles.fuelAmountDark]}>
+          {record.fuelAmount} л
+        </Text>
+        {record.fuelPrice && (
+          <Text style={[styles.fuelPrice, isDark && styles.fuelPriceDark]}>
+            {record.fuelPrice} ₽/л
+          </Text>
+        )}
+        {record.totalCost && (
+          <Text style={[styles.totalCost, isDark && styles.totalCostDark]}>
+            {record.totalCost.toFixed(2)} ₽
+          </Text>
+        )}
+      </View>
     </Pressable>
   );
 };
@@ -103,6 +115,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
+  recordDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   date: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -124,5 +141,22 @@ const styles = StyleSheet.create({
   },
   fuelAmountDark: {
     color: '#999',
+  },
+  fuelPrice: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 8,
+  },
+  fuelPriceDark: {
+    color: '#999',
+  },
+  totalCost: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#0a7ea4',
+    marginLeft: 'auto',
+  },
+  totalCostDark: {
+    color: '#fff',
   },
 });

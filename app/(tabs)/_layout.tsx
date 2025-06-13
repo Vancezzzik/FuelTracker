@@ -18,10 +18,7 @@ export default function TabLayout() {
           paddingTop: 50,
           height: 90,
         },
-        headerStyle: {
-          backgroundColor: isDark ? '#1a1a1a' : '#fff',
-        },
-        headerTintColor: isDark ? '#fff' : '#000',
+
         swipeEnabled: true,
         animationEnabled: true,
         tabBarScrollEnabled: true,

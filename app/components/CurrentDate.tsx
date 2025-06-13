@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { useFontSizes } from '../hooks/useFontSizes';
 
 const CurrentDate: React.FC = () => {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const fontSizes = useFontSizes();
   const [currentDate, setCurrentDate] = useState(new Date());
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const CurrentDate: React.FC = () => {
 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
-      <Text style={[styles.date, isDark && styles.dateDark]}>
+      <Text style={[styles.date, isDark && styles.dateDark, { fontSize: fontSizes.large }]}>
         {formatDate(currentDate)}
       </Text>
     </View>
@@ -58,4 +60,4 @@ const styles = StyleSheet.create({
   dateDark: {
     color: '#fff',
   },
-}); 
+});

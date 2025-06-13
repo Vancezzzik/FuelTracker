@@ -2,24 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 import { DailyStats as DailyStatsType } from '../types';
+import { useFontSizes } from '../hooks/useFontSizes';
 
 interface StatsItemProps {
   label: string;
   value: string;
   isDark: boolean;
+  fontSizes: ReturnType<typeof useFontSizes>;
 }
 
-const StatsItem: React.FC<StatsItemProps> = ({ label, value, isDark }) => {
+const StatsItem: React.FC<StatsItemProps> = ({ label, value, isDark, fontSizes }) => {
   return (
     <View style={styles.statsItem}>
-      <Text style={[styles.label, isDark && styles.labelDark]}>{label}</Text>
-      <Text style={[styles.value, isDark && styles.valueDark]}>{value}</Text>
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>{label}</Text>
+      <Text style={[styles.value, isDark && styles.valueDark, { fontSize: fontSizes.large }]}>{value}</Text>
     </View>
   );
 };
 
 const DailyStats: React.FC = () => {
   const { records, settings, isDark } = useApp();
+  const fontSizes = useFontSizes();
   const [stats, setStats] = useState<DailyStatsType>({
     startMileage: 0,
     endMileage: 0,
@@ -95,36 +98,43 @@ const DailyStats: React.FC = () => {
         label="Пробег на начало дня"
         value={`${formatNumber(stats.startMileage)} км`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Заправлено бензина сегодня"
         value={`${formatFuel(stats.fuelAdded)} л`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Остаток бензина на начало дня"
         value={`${formatFuel(stats.startFuel)} л`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Остаток бензина на конец дня"
         value={`${formatFuel(stats.endFuel)} л`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Расход бензина за сегодня"
         value={`${formatFuel(stats.fuelUsed)} л`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Пробег на конец дня"
         value={`${formatNumber(stats.endMileage)} км`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Пробег за сегодня"
         value={`${formatNumber(stats.dailyMileage)} км`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
     </View>
   );
@@ -169,4 +179,4 @@ const styles = StyleSheet.create({
   valueDark: {
     color: '#fff',
   },
-}); 
+});

@@ -1,24 +1,27 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
+import { useFontSizes } from '../hooks/useFontSizes';
 
 interface StatsItemProps {
   label: string;
   value: string;
   isDark: boolean;
+  fontSizes: ReturnType<typeof useFontSizes>;
 }
 
-const StatsItem: React.FC<StatsItemProps> = ({ label, value, isDark }) => {
+const StatsItem: React.FC<StatsItemProps> = ({ label, value, isDark, fontSizes }) => {
   return (
     <View style={styles.statsItem}>
-      <Text style={[styles.label, isDark && styles.labelDark]}>{label}</Text>
-      <Text style={[styles.value, isDark && styles.valueDark]}>{value}</Text>
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>{label}</Text>
+      <Text style={[styles.value, isDark && styles.valueDark, { fontSize: fontSizes.large }]}>{value}</Text>
     </View>
   );
 };
 
 const MonthlyStats: React.FC = () => {
   const { currentMonth, monthlyStats, settings, isDark } = useApp();
+  const fontSizes = useFontSizes();
 
   const stats = monthlyStats[currentMonth] || {
     totalMileage: 0,
@@ -46,17 +49,43 @@ const MonthlyStats: React.FC = () => {
         label="Пробег за месяц"
         value={`${formatNumber(Math.max(0, stats.totalMileage))} км`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Заправлено бензина за месяц"
         value={`${formatFuel(stats.totalFuel)} л`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
       <StatsItem
         label="Использовано бензина за месяц"
         value={`${formatFuel(fuelUsed)} л`}
         isDark={isDark}
+        fontSizes={fontSizes}
       />
+      {settings.showAnalytics && (
+        <>
+          <View style={styles.divider} />
+          <StatsItem
+            label="Общая стоимость топлива"
+            value={`${formatNumber(stats.totalCost || 0)} ₽`}
+            isDark={isDark}
+            fontSizes={fontSizes}
+          />
+          <StatsItem
+            label="Средняя цена за литр"
+            value={`${formatFuel(stats.averageFuelPrice || 0)} ₽`}
+            isDark={isDark}
+            fontSizes={fontSizes}
+          />
+          <StatsItem
+            label="Стоимость 100 км пробега"
+            value={`${formatNumber(stats.costPer100km || 0)} ₽`}
+            isDark={isDark}
+            fontSizes={fontSizes}
+          />
+        </>
+      )}
     </View>
   );
 };
@@ -100,4 +129,9 @@ const styles = StyleSheet.create({
   valueDark: {
     color: '#fff',
   },
-}); 
+  divider: {
+    height: 1,
+    backgroundColor: '#ddd',
+    marginVertical: 8,
+  },
+});

@@ -16,10 +16,10 @@ export default function RecordScreen() {
 
   const existingRecord = records.find((r) => r.date === date);
   const [dailyMileage, setDailyMileage] = React.useState(
-    existingRecord?.dailyMileage.toString() || ''
+    existingRecord?.dailyMileage?.toString() || ''
   );
   const [fuelAmount, setFuelAmount] = React.useState(
-    existingRecord?.fuelAmount.toString() || ''
+    existingRecord?.fuelAmount?.toString() || ''
   );
 
   const handleSave = async () => {
@@ -36,9 +36,17 @@ export default function RecordScreen() {
         totalMileage: existingRecord.totalMileage 
       });
     } else {
+      // Для новой записи рассчитываем totalMileage на основе предыдущих записей
+      const previousRecords = records
+        .filter(r => r.date < (date as string) && r.totalMileage)
+        .sort((a, b) => b.date.localeCompare(a.date));
+      
+      const lastTotalMileage = previousRecords[0]?.totalMileage || 0;
+      const newTotalMileage = lastTotalMileage + (parseFloat(dailyMileage) || 0);
+      
       await addRecord({ 
         ...recordData, 
-        totalMileage: 0 // Будет пересчитано в контексте
+        totalMileage: newTotalMileage
       });
     }
     router.back();

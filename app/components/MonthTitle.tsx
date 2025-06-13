@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { useApp } from '../context/AppContext';
+import { useFontSizes } from '../hooks/useFontSizes';
 
 const MonthTitle: React.FC = () => {
   const { currentMonth } = useApp();
+  const fontSizes = useFontSizes();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
@@ -19,7 +21,7 @@ const MonthTitle: React.FC = () => {
 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
-      <Text style={[styles.title, isDark && styles.titleDark]}>
+      <Text style={[styles.title, isDark && styles.titleDark, { fontSize: fontSizes.title }]}>
         {getMonthName(currentMonth)}
       </Text>
     </View>
@@ -55,4 +57,4 @@ const styles = StyleSheet.create({
   titleDark: {
     color: '#fff',
   },
-}); 
+});

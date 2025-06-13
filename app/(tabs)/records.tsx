@@ -2,8 +2,8 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import FuelRecordsList from '../components/FuelRecordsList';
-import { FuelRecord } from '../types';
 import { useApp } from '../context/AppContext';
+import { FuelRecord } from '../types';
 
 export default function RecordsScreen() {
   const router = useRouter();

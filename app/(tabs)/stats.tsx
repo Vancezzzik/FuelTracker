@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Analytics from '../components/Analytics';
 import DailyStats from '../components/DailyStats';
 import MonthHeader from '../components/MonthHeader';
 import MonthlyStats from '../components/MonthlyStats';
@@ -106,6 +107,7 @@ export default function StatsScreen() {
           <React.Fragment key={month}>
             <MonthHeader date={monthDate} />
             <MonthlyStats />
+            <Analytics />
             <DailyStats />
           </React.Fragment>
         );

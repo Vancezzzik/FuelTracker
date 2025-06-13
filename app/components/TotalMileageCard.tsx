@@ -1,9 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
+import { useFontSizes } from '../hooks/useFontSizes';
 
 const TotalMileageCard: React.FC = () => {
   const { settings, monthlyStats, currentMonth, isDark } = useApp();
+  const fontSizes = useFontSizes();
 
   const formatNumber = (num: number, withDecimals: boolean = false) => {
     // Округляем число до нужной точности
@@ -19,27 +21,29 @@ const TotalMileageCard: React.FC = () => {
   };
 
   const currentMonthStats = monthlyStats[currentMonth];
-  const remainingLimit = currentMonthStats?.remainingFuelLimit ?? settings.monthlyFuelLimit;
+  const totalFuelThisMonth = currentMonthStats?.totalFuel || 0;
+  const remainingLimit = Math.max(0, settings.monthlyFuelLimit - totalFuelThisMonth);
 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
       <View style={styles.row}>
         <View style={styles.column}>
-          <Text style={[styles.label, isDark && styles.labelDark]}>Общий пробег</Text>
-          <Text style={[styles.value, isDark && styles.valueDark]}>
+          <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>Общий пробег</Text>
+          <Text style={[styles.value, isDark && styles.valueDark, { fontSize: fontSizes.large }]}>
             {formatNumber(settings.totalMileage)} км
           </Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.column}>
-          <Text style={[styles.label, isDark && styles.labelDark]}>
+          <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>
             Остаток лимита
           </Text>
           <Text style={[
             styles.value,
             isDark && styles.valueDark,
             remainingLimit === 0 && styles.limitExceeded,
-            remainingLimit < settings.monthlyFuelLimit * 0.2 && styles.limitWarning
+            remainingLimit < settings.monthlyFuelLimit * 0.2 && styles.limitWarning,
+            { fontSize: fontSizes.large }
           ]}>
             {formatNumber(remainingLimit, true)} л
           </Text>
@@ -103,4 +107,4 @@ const styles = StyleSheet.create({
   limitExceeded: {
     color: '#dc3545',
   },
-}); 
+});
