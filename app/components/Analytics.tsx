@@ -31,8 +31,8 @@ const formatNumber = (num: number | undefined): string => {
 };
 
 const formatFuel = (fuel: number | undefined): string => {
-  if (fuel === undefined || isNaN(fuel)) return "0.0";
-  return fuel.toFixed(1);
+  if (fuel === undefined || isNaN(fuel)) return "0.00";
+  return fuel.toFixed(2);
 };
 
 export default function Analytics() {

@@ -33,11 +33,11 @@ const MonthlyStats: React.FC = () => {
   };
 
   const formatNumber = (num: number) => {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return num.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
   const formatFuel = (liters: number) => {
-    return liters.toFixed(2);
+    return liters.toFixed(3);
   };
 
   // Расчет использованного топлива на основе пробега и среднего расхода

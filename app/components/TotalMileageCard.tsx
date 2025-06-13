@@ -8,15 +8,10 @@ const TotalMileageCard: React.FC = () => {
   const fontSizes = useFontSizes();
 
   const formatNumber = (num: number, withDecimals: boolean = false) => {
-    // Округляем число до нужной точности
-    const roundedNum = withDecimals ? num : Math.round(num);
-    // Преобразуем в строку с фиксированным количеством десятичных знаков
-    const numStr = withDecimals ? roundedNum.toFixed(2) : roundedNum.toString();
-    // Разделяем на целую и дробную части
+    const roundedNum = Math.round(num * 1000) / 1000;
+    const numStr = withDecimals ? roundedNum.toFixed(3) : roundedNum.toString();
     const [wholePart, decimalPart] = numStr.split('.');
-    // Форматируем целую часть с разделителями тысяч
     const formattedWholePart = wholePart.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    // Возвращаем отформатированное число
     return decimalPart ? `${formattedWholePart}.${decimalPart}` : formattedWholePart;
   };
 

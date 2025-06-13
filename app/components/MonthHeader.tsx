@@ -1,22 +1,33 @@
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useApp } from '../context/AppContext';
 
 interface MonthHeaderProps {
   date: Date;
+  isExpanded: boolean;
+  onToggle: () => void;
 }
 
-const MonthHeader: React.FC<MonthHeaderProps> = ({ date }) => {
+const MonthHeader: React.FC<MonthHeaderProps> = ({ date, isExpanded, onToggle }) => {
   const { isDark } = useApp();
 
   return (
-    <View style={[styles.container, isDark && styles.containerDark]}>
-      <Text style={[styles.text, isDark && styles.textLight]}>
-        {format(date, 'LLLL yyyy', { locale: ru })}
-      </Text>
-    </View>
+    <TouchableOpacity 
+      style={[styles.container, isDark && styles.containerDark]} 
+      onPress={onToggle}
+      activeOpacity={0.7}
+    >
+      <View style={styles.headerContent}>
+        <Text style={[styles.text, isDark && styles.textLight]}>
+          {format(date, 'LLLL yyyy', { locale: ru })}
+        </Text>
+        <Text style={[styles.arrow, isDark && styles.textLight]}>
+          {isExpanded ? '▼' : '▶'}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 };
 
@@ -38,13 +49,22 @@ const styles = StyleSheet.create({
   containerDark: {
     backgroundColor: '#2a2a2a',
   },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   text: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    textAlign: 'center',
   },
   textLight: {
     color: '#fff',
   },
-}); 
+  arrow: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: 'bold',
+  },
+});

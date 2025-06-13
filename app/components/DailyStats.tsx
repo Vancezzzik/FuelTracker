@@ -89,7 +89,7 @@ const DailyStats: React.FC = () => {
   };
 
   const formatFuel = (liters: number) => {
-    return liters.toFixed(2);
+    return liters.toFixed(3);
   };
 
   return (

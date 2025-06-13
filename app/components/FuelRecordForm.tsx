@@ -2,6 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { Button, StyleSheet, Text, TextInput, useColorScheme, View } from 'react-native';
 import { useApp } from '../context/AppContext';
+import { useFontSizes } from '../hooks/useFontSizes';
 import { FuelRecord } from '../types';
 import DatePicker from './DatePicker';
 
@@ -14,9 +15,10 @@ const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
   initialData,
   onSubmit,
 }) => {
-  const { addRecord, updateRecord } = useApp();
+  const { addRecord, updateRecord, settings } = useApp();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const fontSizes = useFontSizes();
   const { date: selectedDate } = useLocalSearchParams<{ date: string }>();
 
   const [date, setDate] = useState(initialData?.date || selectedDate || new Date().toISOString().split('T')[0]);
@@ -27,7 +29,7 @@ const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
     initialData?.fuelAmount?.toString() || ''
   );
   const [fuelPrice, setFuelPrice] = useState(
-    initialData?.fuelPrice?.toString() || (state.settings.defaultFuelPrice ?? 0).toString() || ''
+    initialData?.fuelPrice?.toString() || (settings.defaultFuelPrice ?? 0).toString() || ''
   );
   
   // Расчет общей стоимости
@@ -64,61 +66,43 @@ const FuelRecordForm: React.FC<FuelRecordFormProps> = ({
 
   return (
     <View style={[styles.container, isDark && styles.containerDark]}>
-      <View style={styles.inputContainer}>
-        <Text style={[styles.label, isDark && styles.labelDark]}>Дата</Text>
-        <DatePicker value={date} onChange={setDate} />
-      </View>
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>Дата</Text>
+      <DatePicker value={date} onChange={setDate} />
+      
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>Общий пробег (км)</Text>
+      <TextInput
+        style={[styles.input, isDark && styles.inputDark]}
+        value={totalMileage}
+        onChangeText={setTotalMileage}
+        keyboardType="numeric"
+        placeholder="0.0"
+        placeholderTextColor={isDark ? '#666' : '#999'}
+      />
 
-      <View style={styles.inputContainer}>
-        <Text style={[styles.label, isDark && styles.labelDark]}>
-          Общий пробег (км)
-        </Text>
-        <TextInput
-          style={[styles.input, isDark && styles.inputDark]}
-          value={totalMileage}
-          onChangeText={setTotalMileage}
-          keyboardType="numeric"
-          placeholder="0.0"
-          placeholderTextColor={isDark ? '#666' : '#999'}
-        />
-      </View>
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>Количество топлива (л)</Text>
+      <TextInput
+        style={[styles.input, isDark && styles.inputDark]}
+        value={fuelAmount}
+        onChangeText={setFuelAmount}
+        keyboardType="numeric"
+        placeholder="0.0"
+        placeholderTextColor={isDark ? '#666' : '#999'}
+      />
 
-      <View style={styles.inputContainer}>
-        <Text style={[styles.label, isDark && styles.labelDark]}>
-          Количество топлива (л)
-        </Text>
-        <TextInput
-          style={[styles.input, isDark && styles.inputDark]}
-          value={fuelAmount}
-          onChangeText={setFuelAmount}
-          keyboardType="numeric"
-          placeholder="0.0"
-          placeholderTextColor={isDark ? '#666' : '#999'}
-        />
-      </View>
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>Цена за литр (₽)</Text>
+      <TextInput
+        style={[styles.input, isDark && styles.inputDark]}
+        value={fuelPrice}
+        onChangeText={setFuelPrice}
+        keyboardType="numeric"
+        placeholder="0.0"
+        placeholderTextColor={isDark ? '#666' : '#999'}
+      />
 
-      <View style={styles.inputContainer}>
-        <Text style={[styles.label, isDark && styles.labelDark]}>
-          Цена за литр (руб)
-        </Text>
-        <TextInput
-          style={[styles.input, isDark && styles.inputDark]}
-          value={fuelPrice}
-          onChangeText={setFuelPrice}
-          keyboardType="numeric"
-          placeholder="0.0"
-          placeholderTextColor={isDark ? '#666' : '#999'}
-        />
-      </View>
-
-      <View style={styles.inputContainer}>
-        <Text style={[styles.label, isDark && styles.labelDark]}>
-          Общая стоимость (руб)
-        </Text>
-        <Text style={[styles.totalCost, isDark && styles.totalCostDark]}>
-          {totalCost.toFixed(2)}
-        </Text>
-      </View>
+      <Text style={[styles.label, isDark && styles.labelDark, { fontSize: fontSizes.medium }]}>Общая стоимость:</Text>
+      <Text style={[styles.totalCost, isDark && styles.totalCostDark, { fontSize: fontSizes.large }]}>
+        {totalCost.toFixed(2)} ₽
+      </Text>
 
       <Button
         title={initialData ? 'Обновить' : 'Добавить'}
@@ -146,7 +130,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   label: {
-    fontSize: 16,
     color: '#666',
     marginBottom: 8,
   },
@@ -160,6 +143,7 @@ const styles = StyleSheet.create({
     padding: 8,
     fontSize: 16,
     color: '#333',
+    marginBottom: 16,
   },
   inputDark: {
     borderColor: '#444',
@@ -167,7 +151,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
   },
   totalCost: {
-    fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
     padding: 8,
@@ -175,6 +158,7 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 4,
     backgroundColor: '#f5f5f5',
+    marginBottom: 16,
   },
   totalCostDark: {
     color: '#fff',

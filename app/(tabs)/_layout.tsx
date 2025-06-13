@@ -53,7 +53,7 @@ export default function TabLayout() {
       <MaterialTopTabs.Screen
         name="stats"
         options={{
-          title: 'Статистика',
+          title: 'Отчеты',
         }}
       />
       <MaterialTopTabs.Screen

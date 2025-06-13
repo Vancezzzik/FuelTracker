@@ -36,11 +36,11 @@ const MonthlyStatsList: React.FC = () => {
             />
             <StatItem
               label="Расход топлива"
-              value={`${stats.fuelConsumption.toFixed(1)} л`}
+              value={`${stats.fuelConsumption.toFixed(2)} л`}
             />
             <StatItem
               label="Средний расход на 100 км"
-              value={`${stats.averageConsumption.toFixed(1)} л`}
+              value={`${stats.averageConsumption.toFixed(2)} л`}
             />
           </View>
         );
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#333',
   },
-}); 
+});
