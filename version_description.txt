@@ -1,3 +1,14 @@
+Version 1.8.0 - Code Quality and Error Fixes
+
+Changes:
+- Fixed TypeScript typing issues across the project
+- Improved type safety by replacing 'any' types with proper interfaces
+- Added missing imports for React hooks (useCallback, useMemo)
+- Completed implementation of RecordsContext and SettingsContext
+- Fixed missing imports in components
+- Enhanced code quality and maintainability
+- Removed console.log statements for cleaner production code
+
 Version 1.7 - Analysis and Planning
 
 Changes:
