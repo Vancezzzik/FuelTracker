@@ -1,0 +1,52 @@
+Version 1.8.1 - Reports Screen Refactoring
+
+Changes:
+- Renamed stats.tsx to reports.tsx for better clarity
+- Fixed theme consistency issue on reports screen by using isDark from AppContext instead of local useColorScheme
+- Updated navigation layout to reflect the renamed reports screen
+- Added comprehensive analytics components to reports screen (TotalMileageCard, Analytics, MonthlyStats, DailyStats)
+- Fixed import issues in _layout.tsx
+- Improved code organization and maintainability
+
+Version 1.8.0 - Reports Screen Enhancement
+
+Changes:
+- Fixed TypeScript typing issues across the project
+- Improved type safety by replacing 'any' types with proper interfaces
+- Added missing imports for React hooks (useCallback, useMemo)
+- Completed implementation of RecordsContext and SettingsContext
+- Fixed missing imports in components
+- Enhanced code quality and maintainability
+- Removed console.log statements for cleaner production code
+
+Version 1.7 - Analysis and Planning
+
+Changes:
+- Conducted comprehensive application analysis
+- Identified potential improvements and new features
+- Fixed tab navigation layout issues
+- Adjusted Material Top Tabs padding to prevent overlap with system status bar
+- Improved overall UI/UX with better spacing
+
+Version 1.6 - Navigation Improvements
+
+Changes:
+- Attempted to add swipe gestures for navigation between tabs
+- Researched React Navigation Material Top Tab Navigator implementation
+- Explored gesture handling for better user experience
+- Maintained existing UI/UX improvements from previous versions
+
+Version 1.5 - UI Improvements
+
+Changes:
+- Improved dark theme color scheme:
+  1. Changed background color from black (#000000) to dark gray (#1A1A1A)
+  2. Changed card background color from #2a2a2a to darker gray (#222222)
+  3. Overall more professional look in dark mode
+
+Version 1.1 - UX Improvements
+
+Changes:
+- Added automatic keyboard dismissal after saving settings
+- Improved user experience with better feedback
+- Enhanced overall app usability
