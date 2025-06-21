@@ -34,10 +34,7 @@ const DailyStats: React.FC = () => {
   });
 
   useEffect(() => {
-    calculateDailyStats();
-  }, [records, settings]);
-
-  const calculateDailyStats = () => {
+    const calculateDailyStats = () => {
     const today = new Date().toISOString().split('T')[0];
     
     // Получаем все записи до сегодняшнего дня
@@ -82,7 +79,10 @@ const DailyStats: React.FC = () => {
       endFuel,
       fuelUsed: todayFuelUsed,
     });
-  };
+    };
+    
+    calculateDailyStats();
+  }, [records, settings]);
 
   const formatNumber = (num: number) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");

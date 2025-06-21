@@ -29,7 +29,7 @@ export const getFontSizes = (fontSize: 'normal' | 'medium' | 'large') => {
     },
   };
 
-  return baseSizes[fontSize];
+  return baseSizes[fontSize] || baseSizes.normal;
 };
 
 export type FontSizeKey = keyof ReturnType<typeof getFontSizes>;

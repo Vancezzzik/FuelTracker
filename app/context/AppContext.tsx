@@ -1,4 +1,4 @@
-import { AppSettings, AppState, FuelRecord, MonthlyStats } from '@app/types';
+import { AppSettings, AppState, FuelRecord, MonthlyStats, DailyStatsRecord } from '@app/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { format } from 'date-fns';
 import React, { createContext, useContext, useEffect, useState } from 'react';
@@ -10,6 +10,8 @@ interface AppContextType extends AppState {
   deleteRecord: (id: string) => Promise<void>;
   setCurrentMonth: (month: string) => void;
   calculateMonthStats: (month: string) => void;
+  calculateDailyStats: (date: string) => void;
+  getDailyStats: (date: string) => DailyStatsRecord | null;
   updateSettings: (settings: AppSettings) => Promise<void>;
   getLastRecord: () => FuelRecord | undefined;
   isDark: boolean;
@@ -34,6 +36,7 @@ const DEFAULT_STATE: AppState = {
   records: [],
   currentMonth: format(new Date(), 'yyyy-MM'),
   monthlyStats: {},
+  dailyStatsRecords: {},
   settings: DEFAULT_SETTINGS,
 };
 
@@ -329,6 +332,73 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     }
   };
 
+  const calculateDailyStats = (date: string) => {
+    try {
+      // Получаем все записи до указанной даты (включительно)
+      const recordsUpToDate = state.records.filter(r => r.date <= date);
+      // Получаем записи за указанную дату
+      const dayRecords = state.records.filter(r => r.date === date);
+      // Получаем записи до указанной даты (исключая саму дату)
+      const previousRecords = state.records.filter(r => r.date < date);
+      
+      // Рассчитываем общий расход топлива за все предыдущие дни
+      const previousTotalFuelUsed = previousRecords.reduce((sum, r) => 
+        sum + (r.dailyMileage * state.settings.fuelConsumptionPer100km) / 100, 0);
+      
+      // Рассчитываем общее количество заправленного топлива за все предыдущие дни
+      const previousTotalFuelAdded = previousRecords.reduce((sum, r) => 
+        sum + r.fuelAmount, 0);
+      
+      // Суммируем заправки за указанную дату
+      const dayFuelAdded = dayRecords.reduce((sum, r) => sum + r.fuelAmount, 0);
+      
+      // Суммируем пробег за указанную дату
+      const dayMileage = dayRecords.reduce((sum, r) => sum + r.dailyMileage, 0);
+      
+      // Расчет расхода топлива за указанную дату
+      const dayFuelUsed = (dayMileage * state.settings.fuelConsumptionPer100km) / 100;
+      
+      // Рассчитываем пробег на начало и конец дня
+      const totalMileageUpToDate = recordsUpToDate.reduce((sum, r) => sum + r.dailyMileage, 0);
+      const startMileage = totalMileageUpToDate - dayMileage;
+      const endMileage = totalMileageUpToDate;
+      
+      // Расчет остатка топлива на начало дня
+      // Берем изначальный остаток из настроек, добавляем все предыдущие заправки и вычитаем весь предыдущий расход
+      const startFuel = Math.max(0, state.settings.currentFuelAmount + previousTotalFuelAdded - previousTotalFuelUsed);
+      
+      // Расчет остатка на конец дня
+      // К остатку на начало дня добавляем заправки за день и вычитаем расход за день
+      const endFuel = Math.max(0, startFuel + dayFuelAdded - dayFuelUsed);
+
+      const dailyStats: DailyStatsRecord = {
+        date,
+        startMileage,
+        endMileage,
+        dailyMileage: dayMileage,
+        fuelAdded: dayFuelAdded,
+        startFuel,
+        endFuel,
+        fuelUsed: dayFuelUsed,
+      };
+
+      setState((prev: AppState) => ({
+        ...prev,
+        dailyStatsRecords: {
+          ...(prev.dailyStatsRecords || {}),
+          [date]: dailyStats,
+        },
+      }));
+    } catch (error) {
+      console.error('Error calculating daily stats:', error);
+      throw error;
+    }
+  };
+
+  const getDailyStats = (date: string): DailyStatsRecord | null => {
+    return (state.dailyStatsRecords && state.dailyStatsRecords[date]) || null;
+  };
+
   const getLastRecord = () => {
     if (state.records.length === 0) return undefined;
     return state.records[state.records.length - 1];
@@ -428,7 +498,8 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         
         const updatedState = {
           ...parsedData,
-          records: recalculatedRecords
+          records: recalculatedRecords,
+          dailyStatsRecords: parsedData.dailyStatsRecords || {}
         };
         
         setState(updatedState);
@@ -477,6 +548,8 @@ const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     deleteRecord,
     setCurrentMonth,
     calculateMonthStats,
+    calculateDailyStats,
+    getDailyStats,
     updateSettings,
     getLastRecord,
     isDark,

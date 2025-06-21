@@ -1,19 +1,18 @@
-import { Ionicons } from '@expo/vector-icons';
-import { format } from 'date-fns';
-import { ru } from 'date-fns/locale';
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, useColorScheme } from 'react-native';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import Analytics from '../components/Analytics';
 import DailyStats from '../components/DailyStats';
-import MonthHeader from '../components/MonthHeader';
 import MonthlyStats from '../components/MonthlyStats';
 import TotalMileageCard from '../components/TotalMileageCard';
 import { useApp } from '../context/AppContext';
 import { useFontSizes } from '../hooks/useFontSizes';
 
+/**
+ * Экран статистики и отчетов
+ * Отображает аналитику расходов на топливо
+ */
 export default function StatsScreen() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { isDark } = useApp();
   const fontSizes = useFontSizes();
 
   return (
@@ -21,6 +20,18 @@ export default function StatsScreen() {
       <View style={[styles.card, isDark && styles.cardDark]}>
         <Text style={[styles.cardTitle, isDark && styles.cardTitleDark, { fontSize: fontSizes.title }]}>Отчеты</Text>
       </View>
+      
+      {/* Общий пробег */}
+      <TotalMileageCard />
+      
+      {/* Аналитика расходов */}
+      <Analytics />
+      
+      {/* Статистика за месяц */}
+      <MonthlyStats />
+      
+      {/* Статистика за день */}
+      <DailyStats />
     </ScrollView>
   );
 }
@@ -36,7 +47,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 8,
     padding: 20,
     marginBottom: 16,
     shadowColor: '#000',

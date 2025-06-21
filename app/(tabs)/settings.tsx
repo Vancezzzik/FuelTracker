@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, ScrollView, SafeAreaView } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useApp } from '../context/AppContext';
+import { useFontSizes } from '../hooks/useFontSizes';
 
 export default function SettingsScreen() {
   const { settings, updateSettings, isDark } = useApp();
+  const fontSizes = useFontSizes();
 
   const [consumption, setConsumption] = useState(
     (settings.fuelConsumptionPer100km ?? 0).toString()
@@ -246,12 +248,12 @@ export default function SettingsScreen() {
       >
         <View style={[styles.card, isDark && styles.cardDark]}>
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Средний расход на 100 км
           </Text>
           <View style={styles.inputWithButton}>
             <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
+              style={[styles.input, { fontSize: fontSizes.medium }, isDark && styles.inputDark]}
               value={consumption}
               onChangeText={setConsumption}
               keyboardType="numeric"
@@ -262,18 +264,18 @@ export default function SettingsScreen() {
               style={[styles.saveButton, styles.smallButton]}
               onPress={handleSaveConsumption}
             >
-              <Text style={styles.buttonText}>Сохранить</Text>
+              <Text style={[styles.buttonText, { fontSize: fontSizes.small }]}>Сохранить</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Общий пробег (км)
           </Text>
           <View style={styles.inputWithButton}>
             <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
+              style={[styles.input, { fontSize: fontSizes.medium }, isDark && styles.inputDark]}
               value={totalMileage}
               onChangeText={handleTotalMileageChange}
               keyboardType="numeric"
@@ -284,18 +286,18 @@ export default function SettingsScreen() {
               style={[styles.saveButton, styles.smallButton]}
               onPress={handleSaveTotalMileage}
             >
-              <Text style={styles.buttonText}>Сохранить</Text>
+              <Text style={[styles.buttonText, { fontSize: fontSizes.small }]}>Сохранить</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Текущий остаток топлива (л)
           </Text>
           <View style={styles.inputWithButton}>
             <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
+              style={[styles.input, { fontSize: fontSizes.medium }, isDark && styles.inputDark]}
               value={currentFuel}
               onChangeText={handleCurrentFuelChange}
               keyboardType="numeric"
@@ -306,18 +308,18 @@ export default function SettingsScreen() {
               style={[styles.saveButton, styles.smallButton]}
               onPress={handleSaveCurrentFuel}
             >
-              <Text style={styles.buttonText}>Сохранить</Text>
+              <Text style={[styles.buttonText, { fontSize: fontSizes.small }]}>Сохранить</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Месячный лимит топлива (л)
           </Text>
           <View style={styles.inputWithButton}>
             <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
+              style={[styles.input, { fontSize: fontSizes.medium }, isDark && styles.inputDark]}
               value={monthlyFuelLimit}
               onChangeText={setMonthlyFuelLimit}
               keyboardType="numeric"
@@ -328,18 +330,18 @@ export default function SettingsScreen() {
               style={[styles.saveButton, styles.smallButton]}
               onPress={handleSaveMonthlyLimit}
             >
-              <Text style={styles.buttonText}>Сохранить</Text>
+              <Text style={[styles.buttonText, { fontSize: fontSizes.small }]}>Сохранить</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Цена топлива по умолчанию (руб/л)
           </Text>
           <View style={styles.inputWithButton}>
             <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
+              style={[styles.input, { fontSize: fontSizes.medium }, isDark && styles.inputDark]}
               value={defaultFuelPrice}
               onChangeText={handleDefaultFuelPriceChange}
               keyboardType="numeric"
@@ -350,18 +352,18 @@ export default function SettingsScreen() {
               style={[styles.saveButton, styles.smallButton]}
               onPress={handleSaveDefaultFuelPrice}
             >
-              <Text style={styles.buttonText}>Сохранить</Text>
+              <Text style={[styles.buttonText, { fontSize: fontSizes.small }]}>Сохранить</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Месячный бюджет (руб)
           </Text>
           <View style={styles.inputWithButton}>
             <TextInput
-              style={[styles.input, isDark && styles.inputDark]}
+              style={[styles.input, { fontSize: fontSizes.medium }, isDark && styles.inputDark]}
               value={monthlyBudget}
               onChangeText={handleMonthlyBudgetChange}
               keyboardType="numeric"
@@ -372,13 +374,13 @@ export default function SettingsScreen() {
               style={[styles.saveButton, styles.smallButton]}
               onPress={handleSaveMonthlyBudget}
             >
-              <Text style={styles.buttonText}>Сохранить</Text>
+              <Text style={[styles.buttonText, { fontSize: fontSizes.small }]}>Сохранить</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Показывать аналитику
           </Text>
           <TouchableOpacity
@@ -391,6 +393,7 @@ export default function SettingsScreen() {
             <Text
               style={[
                 styles.toggleButtonText,
+                { fontSize: fontSizes.medium },
                 settings.showAnalytics && styles.toggleButtonTextActive,
               ]}
             >
@@ -400,7 +403,7 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.themeContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Размер шрифта
           </Text>
           <View style={styles.themeButtons}>
@@ -414,6 +417,7 @@ export default function SettingsScreen() {
               <Text
                 style={[
                   styles.themeButtonText,
+                  { fontSize: fontSizes.medium },
                   settings.fontSize === 'normal' && styles.activeThemeButtonText,
                 ]}
               >
@@ -430,6 +434,7 @@ export default function SettingsScreen() {
               <Text
                 style={[
                   styles.themeButtonText,
+                  { fontSize: fontSizes.medium },
                   settings.fontSize === 'medium' && styles.activeThemeButtonText,
                 ]}
               >
@@ -446,6 +451,7 @@ export default function SettingsScreen() {
               <Text
                 style={[
                   styles.themeButtonText,
+                  { fontSize: fontSizes.medium },
                   settings.fontSize === 'large' && styles.activeThemeButtonText,
                 ]}
               >
@@ -456,7 +462,7 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.themeContainer}>
-          <Text style={[styles.label, isDark && styles.textLight]}>
+          <Text style={[styles.label, { fontSize: fontSizes.medium }, isDark && styles.textLight]}>
             Тема оформления
           </Text>
           <View style={styles.themeButtons}>
@@ -470,6 +476,7 @@ export default function SettingsScreen() {
               <Text
                 style={[
                   styles.themeButtonText,
+                  { fontSize: fontSizes.medium },
                   settings.theme === 'system' && styles.activeThemeButtonText,
                 ]}
               >
@@ -486,6 +493,7 @@ export default function SettingsScreen() {
               <Text
                 style={[
                   styles.themeButtonText,
+                  { fontSize: fontSizes.medium },
                   settings.theme === 'light' && styles.activeThemeButtonText,
                 ]}
               >
@@ -502,6 +510,7 @@ export default function SettingsScreen() {
               <Text
                 style={[
                   styles.themeButtonText,
+                  { fontSize: fontSizes.medium },
                   settings.theme === 'dark' && styles.activeThemeButtonText,
                 ]}
               >
@@ -528,6 +537,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
+    paddingTop: 16,
     paddingBottom: 20,
   },
   toggleButton: {
@@ -554,9 +564,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: 16,
-    margin: 16,
-    marginTop: 8,
-    marginBottom: 8,
+    marginHorizontal: 16,
+    marginBottom: 16,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -575,7 +584,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   label: {
-    fontSize: 16,
     color: '#333',
     marginBottom: 8,
   },
@@ -588,7 +596,6 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     borderRadius: 4,
     padding: 8,
-    fontSize: 16,
     color: '#333',
     backgroundColor: '#fff',
   },
@@ -609,7 +616,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontSize: 14,
     fontWeight: 'bold',
   },
   themeContainer: {

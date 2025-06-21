@@ -1,3 +1,7 @@
+import { useCallback } from 'react';
+import { useApp } from '../context/AppContext';
+import { AppSettings } from '../types';
+
 export const useSettings = () => {
   const { settings, updateSettings } = useApp();
   
@@ -8,7 +12,7 @@ export const useSettings = () => {
     } catch (error) {
       // показать ошибку
     }
-  }, [settings, updateSettings]);
+  }, [updateSettings]);
   
   return { settings, updateSetting };
 };

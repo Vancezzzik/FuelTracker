@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useApp } from '../context/AppContext';
 import { FuelRecord } from '../types';
+import DailyStatsModal from './DailyStatsModal';
 
 interface FuelRecordItemProps {
   record: FuelRecord;
   onPress: (record: FuelRecord) => void;
+  onLongPress: (date: string) => void;
 }
 
 const formatDisplayDate = (dateString: string) => {
@@ -13,7 +15,7 @@ const formatDisplayDate = (dateString: string) => {
   return `${day}.${month}.${year}`;
 };
 
-const FuelRecordItem: React.FC<FuelRecordItemProps> = ({ record, onPress }) => {
+const FuelRecordItem: React.FC<FuelRecordItemProps> = ({ record, onPress, onLongPress }) => {
   const { isDark } = useApp();
 
   return (
@@ -24,6 +26,7 @@ const FuelRecordItem: React.FC<FuelRecordItemProps> = ({ record, onPress }) => {
         pressed && styles.recordItemPressed,
       ]}
       onPress={() => onPress(record)}
+      onLongPress={() => onLongPress(record.date)}
     >
       <View style={styles.recordHeader}>
         <Text style={[styles.date, isDark && styles.dateDark]}>
@@ -60,6 +63,18 @@ const FuelRecordsList: React.FC<FuelRecordsListProps> = ({
   onRecordPress,
 }) => {
   const { records, currentMonth, isDark } = useApp();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const handleLongPress = (date: string) => {
+    setSelectedDate(date);
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
+    setSelectedDate('');
+  };
 
   const filteredRecords = records
     .filter((record) => record.date.startsWith(currentMonth))
@@ -70,10 +85,20 @@ const FuelRecordsList: React.FC<FuelRecordsListProps> = ({
       <FlatList
         data={filteredRecords}
         renderItem={({ item }) => (
-          <FuelRecordItem record={item} onPress={onRecordPress} />
+          <FuelRecordItem 
+            record={item} 
+            onPress={onRecordPress} 
+            onLongPress={handleLongPress}
+          />
         )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+      />
+      
+      <DailyStatsModal
+        visible={modalVisible}
+        date={selectedDate}
+        onClose={handleCloseModal}
       />
     </View>
   );
@@ -91,6 +116,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: 16,
+    paddingTop: 16,
   },
   recordItem: {
     backgroundColor: '#fff',

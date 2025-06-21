@@ -63,15 +63,17 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     borderRadius: 8,
-    margin: 16,
+    marginHorizontal: 16,
+    marginBottom: 16,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    overflow: 'hidden',
   },
   containerDark: {
     backgroundColor: '#2a2a2a',
     shadowOpacity: 0.2,
   },
-}); 
+});

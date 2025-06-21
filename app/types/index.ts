@@ -34,6 +34,17 @@ export interface DailyStats {
   fuelUsed: number;
 }
 
+export interface DailyStatsRecord {
+  date: string;
+  startMileage: number;
+  endMileage: number;
+  dailyMileage: number;
+  fuelAdded: number;
+  startFuel: number;
+  endFuel: number;
+  fuelUsed: number;
+}
+
 // Типы для настроек приложения
 export interface AppSettings {
   fuelConsumptionPer100km: number;
@@ -52,6 +63,7 @@ export interface AppState {
   records: FuelRecord[];
   currentMonth: string;
   monthlyStats: Record<string, MonthlyStats>;
+  dailyStatsRecords: Record<string, DailyStatsRecord>;
   settings: AppSettings;
 }
 
@@ -61,9 +73,12 @@ export interface AppContextType {
   updateRecord: (record: FuelRecord) => Promise<void>;
   deleteRecord: (id: string) => Promise<void>;
   calculateMonthStats: (month: string, records?: FuelRecord[]) => void;
+  calculateDailyStats: (date: string) => void;
+  getDailyStats: (date: string) => DailyStatsRecord | null;
   updateSettings: (settings: AppSettings) => Promise<void>;
   currentMonth: string;
   monthlyStats: { [key: string]: MonthlyStats };
+  dailyStatsRecords: { [key: string]: DailyStatsRecord };
   records: FuelRecord[];
   settings: AppSettings;
 }

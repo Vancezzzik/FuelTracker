@@ -2,10 +2,12 @@ import { Stack } from 'expo-router';
 import React from 'react';
 import Toast from 'react-native-toast-message';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import AppProvider, { useApp } from './context/AppContext';
+import { useColorScheme } from 'react-native';
+import AppProvider from './context/AppContext';
 
 function RootLayout() {
-  const { isDark } = useApp();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

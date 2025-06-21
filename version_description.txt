@@ -1,4 +1,25 @@
-Version 1.8.0 - Code Quality and Error Fixes
+Version 1.9.1 - Font Size Accessibility Enhancement
+
+Changes:
+- Implemented dynamic font sizing system across the entire application
+- Added useFontSizes hook for consistent font size management
+- Applied dynamic font sizes to settings screen (labels, inputs, buttons, toggles)
+- Enhanced accessibility by allowing users to customize text size
+- Improved user experience for users with different visual needs
+- All text elements now respond to font size settings changes
+- Maintained design consistency while adding flexibility
+
+Version 1.8.1 - Reports Screen Refactoring
+
+Changes:
+- Renamed stats.tsx to reports.tsx for better clarity
+- Fixed theme consistency issue on reports screen by using isDark from AppContext instead of local useColorScheme
+- Updated navigation layout to reflect the renamed reports screen
+- Added comprehensive analytics components to reports screen (TotalMileageCard, Analytics, MonthlyStats, DailyStats)
+- Fixed import issues in _layout.tsx
+- Improved code organization and maintainability
+
+Version 1.8.0 - Reports Screen Enhancement
 
 Changes:
 - Fixed TypeScript typing issues across the project
